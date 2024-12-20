@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Category{% endblock title %}
+
+{% block content %}
+<h1 class="text-center mb-4">Add Category</h1>
+
+<form action="" method="post" class="w-50 mx-auto">
+    {% csrf_token %}
+    {{form | crispy}}
+
+    <button class="btn btn-primary mt-3">Submit</button>
+</form>
+
+<div class="w-50 mx-auto mt-5">
+    <h4 class="my-5">Available Category</h4>
+    <div>
+        {% for category in categories %}
+        <p>{{ forloop.counter }}. {{ category.name }}</p>
+        {% empty %}
+            <p>No categories available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

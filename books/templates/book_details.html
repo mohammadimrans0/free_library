@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book Details{% endblock title %}
+
+{% block content %}
+
+<div class="row">
+    <!-- Image Section -->
+    <div class="col-md-7">
+        <img
+            src="{{ book.image.url }}"
+            class="rounded w-100"
+            style="height: 450px;"
+            alt="book-image"
+        />
+    </div>
+
+    <!-- Details Section -->
+    <div class="col-md-5">
+        <h1 class="card-title my-4 text-info">{{ book.title }}</h1>
+        <p>
+            <span class="fw-bold">Description:</span>
+            <span>{{ book.description }}</span>
+        </p>
+        <p>
+            <span class="fw-bold">Borrow Price:</span>
+            <span>${{ book.borrow_price }}</span>
+        </p>
+        <p class="mt-5">
+            {% if user.is_authenticated %}
+                {% if book in user.borrowed_books.all %}
+                    <button class="btn btn-secondary" disabled>Borrowed</button>
+                {% else %}
+                    <a href="{% url 'borrow_book' book.id %}" class="btn btn-primary">Borrow Now</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'signin' %}" class="btn btn-primary">Login to Borrow</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<!-- Review Form Section -->
+<div class="my-5">
+    <h3 class="mb-3">Leave a Review</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ review_form|crispy }}
+        <button type="submit" class="btn btn-primary">Post Review</button>
+    </form>
+</div>
+
+<!-- Displaying Reviews Section -->
+<div>
+    <h3>Reviews</h3>
+    {% for review in book.reviews.all %}
+    <div class="border p-3 mb-3">
+        <p><strong>{{ review.name }}</strong> <span class="text-muted">({{ review.created_on|date:"M d, Y H:i" }})</span></p>
+        <p>{{ review.body }}</p>
+    </div>
+    {% empty %}
+    <p>No reviews yet. Be the first to review!</p>
+    {% endfor %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Sidebar for Filters -->
+    <div class="col-md-2 border" style="height: 450px;">
+      <h4 class="mt-3">Filter Books</h4>
+      <form method="get" class="p-1" id="category-filter-form">
+        {% for category in categories %}
+        <div class="form-check">
+          <input 
+            class="form-check-input" 
+            type="radio" 
+            name="category" 
+            id="category-{{ category.id }}" 
+            value="{{ category.id }}"
+            {% if category.id|stringformat:"s" == selected_category_id %}checked{% endif %}
+            onchange="document.getElementById('category-filter-form').submit();">
+          <label class="form-check-label" for="category-{{ category.id }}">
+            {{ category.name }}
+          </label>
+        </div>
+        {% endfor %}
+      </form>
+    </div>
+    
+    
+    <!-- Books Section -->
+    <div class="col-md-10">
+      <div class="row">
+        {% for book in books %}
+        <div class="col-md-4 mb-4">
+          <div class="card" style="height: 450px;">
+            <a href="{% url 'book_details' book.pk %}" class="text-decoration-none">
+              <img src="{{ book.image.url }}" class="card-img-top" style="height: 200px;" alt="book-image">
+            </a>  
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="{% url 'book_details' book.pk %}" class="text-decoration-none">
+                  <span class="text-dark">{{ book.title }}</span>
+                </a>
+              </h4>
+              <p class="card-text">{{ book.description|truncatewords:35 }}</p>        
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <h4>No books available.</h4>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
